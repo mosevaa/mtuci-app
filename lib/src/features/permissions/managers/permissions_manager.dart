@@ -8,7 +8,7 @@ class PermissionsManager {
     if (permissionsGranted != null) return permissionsGranted;
 
     final permissions = await [
-      Permission.storage,
+      Permission.manageExternalStorage,
       Permission.microphone,
     ].request();
 

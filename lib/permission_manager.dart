@@ -12,7 +12,7 @@ class PermissionManager {
 
     _completer = Completer();
     final permissions = await [
-      Permission.storage,
+      Permission.manageExternalStorage,
       Permission.microphone,
     ].request();
 

@@ -15,8 +15,6 @@ class RecorderScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final recordEntity = ref.watch(recorderState);
-    final recordsProvider = ref.watch(recordsProviderProvider);
-    final uploaderManager = ref.watch(uploaderManagerProvider);
 
     return Scaffold(
       body: SafeArea(
@@ -33,7 +31,7 @@ class RecorderScreen extends ConsumerWidget {
                     children: [
                       const SizedBox(height: 8),
                       const Text(
-                        'МТУСИ.Прослушка',
+                        'SpeechX',
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.w500,
@@ -58,57 +56,16 @@ class RecorderScreen extends ConsumerWidget {
                         ),
                       ),
                       const SizedBox(height: 100),
-                      const Text('by @a1exs & @webmadness'),
                       const SizedBox(height: 8),
                       const Divider(),
                       const SizedBox(height: 8),
-                      const Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          'Записи',
-                          style: TextStyle(
-                            fontSize: 18,
-                          ),
-                        ),
-                      ),
+
                     ],
                   ),
                 ),
               ),
             ),
-            StreamBuilder<List<RecordModel>>(
-              stream: recordsProvider.recordsStream,
-              builder: (context, snapshot) {
-                final records = snapshot.data ?? [];
 
-                return SliverList.separated(
-                  separatorBuilder: (context, index) => const Divider(),
-                  itemBuilder: (context, index) {
-                    final record = records[index];
-
-                    final duration =
-                        Duration(milliseconds: record.durationMills);
-                    final inMinutes = duration.inMinutes;
-                    final inSeconds = duration.inSeconds - inMinutes * 60;
-
-                    return ListTile(
-                      leading: Text(
-                        "${inMinutes.toString().padLeft(2, "0")}:${inSeconds.toString().padLeft(2, "0")}",
-                      ),
-                      title: Text(record.filePath.split('/').last),
-                      trailing: IconButton(
-                        icon: const Icon(Icons.delete, color: Colors.red),
-                        splashRadius: 15,
-                        onPressed: () {
-                          uploaderManager.removeRecord(record);
-                        },
-                      ),
-                    );
-                  },
-                  itemCount: records.length,
-                );
-              },
-            ),
           ],
         ),
       ),

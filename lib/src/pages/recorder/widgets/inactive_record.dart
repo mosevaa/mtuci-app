@@ -11,7 +11,8 @@ class InactiveRecord extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return TextButton(
       style: kButtonStyle,
-      child: const Text('Начать прослушку'),
+      child: const Text('Начать запись'
+          ''),
       onPressed: () async {
         ref.read(recorderManagerProvider).start();
       },

@@ -1,15 +1,20 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:isar/isar.dart';
 import 'package:voice_of_mtuci/src/features/uploader/managers/uploader_manager.dart';
 import 'package:voice_of_mtuci/src/features/uploader/providers/records_provider.dart';
 
+import '../../../api.dart';
 import '../../../providers.dart';
+
 
 final uploaderManagerProvider = Provider(
   (ref) => UploaderManager(
     ServiceModule.isar,
-    ref.read(recordsProviderProvider),
+    ref.read(recordsProviderProvider)
   )..loadRecords(),
 );
+
+
 
 final recordsProviderProvider = Provider(
   (ref) {

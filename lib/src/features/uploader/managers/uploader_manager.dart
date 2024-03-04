@@ -4,6 +4,7 @@ import 'package:isar/isar.dart';
 import 'package:voice_of_mtuci/src/features/recorder/entities/record_entity.dart';
 import 'package:voice_of_mtuci/src/features/uploader/models/record_model.dart';
 import 'package:voice_of_mtuci/src/features/uploader/providers/records_provider.dart';
+import 'package:voice_of_mtuci/api.dart';
 
 class UploaderManager {
   final Isar isar;
@@ -21,7 +22,23 @@ class UploaderManager {
       ); // insert & update
     });
 
-    loadRecords();
+
+
+    await loadRecords();
+
+    final MyApi api = MyApi();
+
+    final record = recordsProvider.records.first;
+    final file = File(record.filePath);
+    final fileExist = await file.exists();
+
+    if (fileExist) {
+        print('exist');
+        print(file);
+        await api.sendFile(file);
+    } else {
+      print('not exist');
+    }
   }
 
   Future<void> removeRecord(RecordModel recordModel) async {

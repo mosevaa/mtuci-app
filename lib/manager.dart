@@ -123,7 +123,7 @@ class RecordManager {
     await _trimmerCompleter?.future;
     _trimmerCompleter = Completer();
     try {
-      _api.sendFile(recFile, 'test');
+      _api.sendFile(recFile);
     } catch (e) {
       print(e);
     }
@@ -145,8 +145,18 @@ class RecordManager {
   }
 
   Future<void> stop() async {
-    String? path = await _audioRecorder.stop();
+    print('here');
+    _audioRecorder.stop();
     _statusController.state = RecordStatus.inactive;
+    final now = DateTime.now();
+    final recFile = _recFile;
+    final startSec =
+        _triggered!.difference(startTime!).inMilliseconds / 1000;
+    final endSec = now.difference(startTime!).inMilliseconds / 1000;
+    await _restartRec();
+    _postRec(recFile!, startSec, endSec);
+
+
     _ampTimer?.cancel();
     _ampTimer = null;
   }

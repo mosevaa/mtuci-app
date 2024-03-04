@@ -23,7 +23,7 @@ class ActiveRecord extends ConsumerWidget {
     return Column(
       children: [
         const Text(
-          'Идет прослушка :)',
+          'Идет запись',
           style: TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.w500,
