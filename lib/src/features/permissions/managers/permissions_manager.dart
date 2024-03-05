@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:permission_handler/permission_handler.dart';
 
 class PermissionsManager {
@@ -7,10 +9,17 @@ class PermissionsManager {
     final permissionsGranted = _permissionsGranted;
     if (permissionsGranted != null) return permissionsGranted;
 
-    final permissions = await [
-      Permission.manageExternalStorage,
-      Permission.microphone,
-    ].request();
+    final Map<Permission, PermissionStatus> permissions;
+    if (Platform.isAndroid) {
+      permissions = await [
+        Permission.manageExternalStorage,
+        Permission.microphone,
+      ].request();
+    } else {
+      permissions = await [
+        Permission.microphone,
+      ].request();
+    }
 
     _permissionsGranted =
         permissions.values.every((element) => element.isGranted);

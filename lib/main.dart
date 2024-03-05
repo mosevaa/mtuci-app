@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:voice_of_mtuci/providers.dart';
+import 'package:voice_of_mtuci/src/pages/login/login_screen.dart';
 
 import 'src/pages/recorder/recorder_screen.dart';
 
@@ -25,7 +26,7 @@ class MyApp extends StatelessWidget {
       builder: (context, child) => ProviderScope(
         child: child ?? const SizedBox.shrink(),
       ),
-      home: const RecorderScreen(),
+      home: const LoginScreen(),
     );
   }
 }

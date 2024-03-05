@@ -1,17 +1,31 @@
+import 'dart:convert';
 import 'dart:io';
 
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MyApi {
   MyApi();
 
   Future<void> sendFile(File file) async {
-    String token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoidG9rZW4iLCJleHAiOm51bGwsInRva2VuIjoxMH0.IxRzmsUGcmtTyHcF7AUw_Wk5Wn0f6Fl9AqaEBgzu41g';
-    String identity = '12345678';
-    print('here');
+    final prefs = await SharedPreferences.getInstance();
+    String token = prefs.getString('token') ?? '';
+
+    final identity;
+    final deviceInfo = DeviceInfoPlugin();
+    if (Platform.isIOS) {
+      final iosDeviceInfo = await deviceInfo.iosInfo;
+      identity = iosDeviceInfo.identifierForVendor;
+    } else {
+      final androidDeviceInfo = await deviceInfo.androidInfo;
+      identity = androidDeviceInfo.serialNumber;
+    }
+
     final request = http.MultipartRequest(
       'POST',
-      Uri.parse('http://172.16.0.190:8004/api/ats/upload?identity=$identity&token=$token'),
+      Uri.parse(
+          'http://172.16.0.190:8004/api/ats/upload?identity=$identity&token=$token'),
     );
 
     final len = file.lengthSync();
@@ -25,6 +39,27 @@ class MyApi {
     );
     final res = await request.send();
     final respStr = await res.stream.bytesToString();
-    print(res.statusCode);
+  }
+
+  Future<http.Response> login(String token, String name) async {
+    Map<String, String> userHeader = {
+      "Content-type": "application/json",
+      "Accept": "application/json"
+    };
+    final identity;
+    final deviceInfo = DeviceInfoPlugin();
+    if (Platform.isIOS) {
+      final iosDeviceInfo = await deviceInfo.iosInfo;
+      identity = iosDeviceInfo.identifierForVendor;
+    } else {
+      final androidDeviceInfo = await deviceInfo.androidInfo;
+      identity = androidDeviceInfo.serialNumber;
+    }
+    final url = Uri.parse('http://172.16.0.190:8004/api/ats/announce');
+    final request = await http.post(url,
+        body: json.encode(
+            {"access_token": token, "identity": identity, "info": name}),
+        headers: userHeader);
+    return request;
   }
 }
