@@ -3,7 +3,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:voice_of_mtuci/providers.dart';
 import 'package:voice_of_mtuci/src/pages/login/login_screen.dart';
 
-import 'src/pages/recorder/recorder_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
