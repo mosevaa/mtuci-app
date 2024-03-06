@@ -10,13 +10,13 @@ class PermissionsManager {
     if (permissionsGranted != null) return permissionsGranted;
 
     final Map<Permission, PermissionStatus> permissions;
-    if (Platform.isAndroid) {
+    if (Platform.isIOS) {
       permissions = await [
-        Permission.manageExternalStorage,
         Permission.microphone,
       ].request();
     } else {
       permissions = await [
+        Permission.manageExternalStorage,
         Permission.microphone,
       ].request();
     }

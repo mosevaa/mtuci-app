@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:device_info_plus/device_info_plus.dart';
 import 'package:http/http.dart' as http;
+import 'package:mobile_device_identifier/mobile_device_identifier.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class MyApi {
@@ -12,15 +12,7 @@ class MyApi {
     final prefs = await SharedPreferences.getInstance();
     String token = prefs.getString('token') ?? '';
 
-    final identity;
-    final deviceInfo = DeviceInfoPlugin();
-    if (Platform.isIOS) {
-      final iosDeviceInfo = await deviceInfo.iosInfo;
-      identity = iosDeviceInfo.identifierForVendor;
-    } else {
-      final androidDeviceInfo = await deviceInfo.androidInfo;
-      identity = androidDeviceInfo.serialNumber;
-    }
+    final identity = await MobileDeviceIdentifier().getDeviceId();
 
     final request = http.MultipartRequest(
       'POST',
@@ -46,15 +38,7 @@ class MyApi {
       "Content-type": "application/json",
       "Accept": "application/json"
     };
-    final identity;
-    final deviceInfo = DeviceInfoPlugin();
-    if (Platform.isIOS) {
-      final iosDeviceInfo = await deviceInfo.iosInfo;
-      identity = iosDeviceInfo.identifierForVendor;
-    } else {
-      final androidDeviceInfo = await deviceInfo.androidInfo;
-      identity = androidDeviceInfo.serialNumber;
-    }
+    final identity = await MobileDeviceIdentifier().getDeviceId();
     final url = Uri.parse('http://172.16.0.190:8004/api/ats/announce');
     final request = await http.post(url,
         body: json.encode(

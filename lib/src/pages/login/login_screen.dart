@@ -1,7 +1,6 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:voice_of_mtuci/api.dart';
 import 'package:voice_of_mtuci/src/pages/recorder/recorder_screen.dart';
@@ -51,15 +50,16 @@ class LoginScreenState extends State<LoginScreen> {
 
     final api = MyApi();
     final res = await api.login(_token, _name);
+
     if (res.statusCode == 401) {
       print('401');
     } else if (res.statusCode == 204) {
+      _setToken(_token);
       Navigator.push(
           context,
           MaterialPageRoute(
             builder: (context) => const RecorderScreen(),
           ));
-      _setToken(_token);
     } else {
       print(res.statusCode);
     }
@@ -67,52 +67,53 @@ class LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<String>(
-        future: _getToken(),
-        builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
-          print(snapshot);
-          if (snapshot.hasData) {
-            print(snapshot);
-          }
-          return Scaffold(
-              body: SafeArea(
-            child: Center(
-              child: Form(
-                  key: formKey,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      SizedBox(
-                        width: 400.0,
-                        child: TextFormField(
-                          decoration:
-                              const InputDecoration(labelText: "API токен"),
-                          onSaved: (val) => _token = val!,
-                        ),
-                      ),
-                      Container(
-                        width: 400.0,
-                        padding: const EdgeInsets.only(top: 10.0),
-                        child: TextFormField(
-                          decoration:
-                              const InputDecoration(labelText: "Имя оператора"),
-                          onSaved: (val) => _name = val ?? '',
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 25.0),
-                        child: TextButton(
-                          style: kButtonStyle,
-                          onPressed: loginHandler,
-                          child: const Text(
-                            "ВХОД",
+    _getToken().then((value) {
+      if (value != '') {
+        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const RecorderScreen(),
+                          ));
+      }
+    });
+    return Scaffold(
+                  body: SafeArea(
+                child: Center(
+                  child: Form(
+                      key: formKey,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          SizedBox(
+                            width: 400.0,
+                            child: TextFormField(
+                              decoration:
+                                  const InputDecoration(labelText: "API токен"),
+                              onSaved: (val) => _token = val!,
+                            ),
                           ),
-                        ),
-                      )
-                    ],
-                  )),
-            ),
-          ));
-        });
+                          Container(
+                            width: 400.0,
+                            padding: const EdgeInsets.only(top: 10.0),
+                            child: TextFormField(
+                              decoration:
+                                  const InputDecoration(labelText: "Имя оператора"),
+                              onSaved: (val) => _name = val ?? '',
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 25.0),
+                            child: TextButton(
+                              style: kButtonStyle,
+                              onPressed: loginHandler,
+                              child: const Text(
+                                "ВХОД",
+                              ),
+                            ),
+                          )
+                        ],
+                      )),
+                ),
+              ));
   }
 }
