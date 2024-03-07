@@ -17,7 +17,7 @@ class MyApi {
     final request = http.MultipartRequest(
       'POST',
       Uri.parse(
-          'http://app.speechx.ru/api/mobile/upload?identity=$identity&token=$token'),
+          'https://app.speechx.ru/api/mobile/upload?identity=$identity&token=$token'),
     );
 
     final len = file.lengthSync();
@@ -30,6 +30,7 @@ class MyApi {
       ),
     );
     final res = await request.send();
+    print(res.statusCode);
     final respStr = await res.stream.bytesToString();
   }
 
@@ -39,7 +40,7 @@ class MyApi {
       "Accept": "application/json"
     };
     final identity = await MobileDeviceIdentifier().getDeviceId();
-    final url = Uri.parse('http://app.speechx.ru/api/mobile/announce');
+    final url = Uri.parse('https://app.speechx.ru/api/mobile/announce');
     final request = await http.post(url,
         body: json.encode(
             {"access_token": token, "identity": identity, "info": name}),
